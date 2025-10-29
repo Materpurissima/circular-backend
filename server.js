@@ -1,4 +1,3 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -11,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Servir archivos estáticos (opcional, por si subís un index.html después)
+// Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Conectar a MongoDB
@@ -19,7 +18,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB conectado'))
   .catch(err => console.error('❌ Error MongoDB:', err));
 
-// ✅ Ruta para generar HTML con logs de depuración
+// Ruta para generar HTML con logs
 app.get('/api/confirmaciones/html', async (req, res) => {
   try {
     console.log('🟡 Consultando alumnos desde MongoDB...');
@@ -68,7 +67,11 @@ app.get('/api/confirmaciones/html', async (req, res) => {
 // ✅ Rutas de la API
 app.use('/api', require('./routes/alumnos'));
 
+// ✅ Ruta raíz
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Puerto
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`🚀 Servidor escuchando en puerto ${PORT}`));
-
