@@ -207,7 +207,7 @@
 
         try {
           // Hacer una solicitud al backend para buscar al alumno por DNI
-          const response = await fetch(`https://mi-backend-tgpm.onrender.com/api/alumnos/dni/${dni}`); // Cambia la URL según tu configuración
+          const response = await fetch(`https://circular-backend-k0ta.onrender.com/api/alumnos/dni/${dni}`); // Cambia la URL según tu configuración
           if (response.ok) {
             const alumno = await response.json();
             // Autocompletar los campos de nombre y apellido si el alumno existe
@@ -277,7 +277,7 @@
             if (result.isConfirmed) {
               try {
                 const response = await fetch(
-                  "https://mi-backend-tgpm.onrender.com/api/confirmar",
+                  ""https://circular-backend-k0ta.onrender.com/api/confirmar"",
                   {
                     method: "POST",
                     headers: {
