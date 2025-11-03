@@ -90,6 +90,28 @@ router.post('/confirmar', async (req, res) => {
   }
 });
 
+// Ruta de prueba para enviar correo
+router.get('/test-email', async (req, res) => {
+  const { enviarConfirmacionEmail } = require('../services/emailService');
+
+  const testAlumno = {
+    nombre: 'Test',
+    apellido: 'Brevo',
+    curso: 5,
+    dni: '99999999',
+    fechaConfirmacion: new Date()
+  };
+
+  try {
+    await enviarConfirmacionEmail('franco40012.fc@gmail.com', testAlumno);
+    res.json({ message: '✅ Email de prueba enviado correctamente' });
+  } catch (error) {
+    console.error('❌ Error en test-email:', error);
+    res.status(500).json({ message: 'Error al enviar el email de prueba' });
+  }
+});
+
+
 module.exports = router;
 
 
