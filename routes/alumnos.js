@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Alumno = require('../models/Alumno');
+const { enviarConfirmacionEmail } = require('../services/emailService');
 
 // Ruta para buscar alumno por DNI
 router.get('/alumnos/dni/:dni', async (req, res) => {
@@ -58,5 +59,37 @@ router.get('/confirmaciones', async (req, res) => {
   }
 });
 
+// Ruta para confirmar inscripción
+router.post('/confirmar', async (req, res) => {
+  const { dni, nombre, apellido, curso, email } = req.body;
+
+  try {
+    let alumno = await Alumno.findOne({ dni });
+
+    if (alumno && alumno.confirmado) {
+      return res.json({ confirmado: true, message: 'Ya confirmado' });
+    }
+
+    if (!alumno) {
+      alumno = new Alumno({ dni, nombre, apellido, curso, email });
+    }
+
+    alumno.confirmado = true;
+    alumno.fechaConfirmacion = new Date();
+    await alumno.save();
+
+    // ✅ Enviar el correo de confirmación
+    if (email) {
+      await enviarConfirmacionEmail(email, alumno);
+    }
+
+    res.json({ confirmado: false, message: 'Confirmación exitosa y correo enviado' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error al confirmar' });
+  }
+});
+
 module.exports = router;
+
 
