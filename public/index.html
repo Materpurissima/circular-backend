@@ -1,10 +1,13 @@
-<html lang="es"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Confirmación de Circular</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script><style>:root{--swal2-outline: 0 0 0 3px rgba(100, 150, 200, 0.5);--swal2-container-padding: 0.625em;--swal2-backdrop: rgba(0, 0, 0, 0.4);--swal2-backdrop-transition: background-color 0.1s;--swal2-width: 32em;--swal2-padding: 0 0 1.25em;--swal2-border: none;--swal2-border-radius: 0.3125rem;--swal2-background: white;--swal2-color: #545454;--swal2-show-animation: swal2-show 0.3s;--swal2-hide-animation: swal2-hide 0.15s forwards;--swal2-icon-zoom: 1;--swal2-icon-animations: true;--swal2-title-padding: 0.8em 1em 0;--swal2-html-container-padding: 1em 1.6em 0.3em;--swal2-input-border: 1px solid #d9d9d9;--swal2-input-border-radius: 0.1875em;--swal2-input-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px transparent;--swal2-input-background: transparent;--swal2-input-transition: border-color 0.2s, box-shadow 0.2s;--swal2-input-hover-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px transparent;--swal2-input-focus-border: 1px solid #b4dbed;--swal2-input-focus-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px $swal2-outline-color;--swal2-progress-step-background: #add8e6;--swal2-validation-message-background: #f0f0f0;--swal2-validation-message-color: #666;--swal2-footer-border-color: #eee;--swal2-footer-background: transparent;--swal2-footer-color: inherit;--swal2-timer-progress-bar-background: rgba(0, 0, 0, 0.3);--swal2-close-button-position: initial;--swal2-close-button-inset: auto;--swal2-close-button-font-size: 2.5em;--swal2-close-button-color: #ccc;--swal2-close-button-transition: color 0.2s, box-shadow 0.2s;--swal2-close-button-outline: initial;--swal2-close-button-box-shadow: inset 0 0 0 3px transparent;--swal2-close-button-focus-box-shadow: inset var(--swal2-outline);--swal2-close-button-hover-transform: none;--swal2-actions-justify-content: center;--swal2-actions-width: auto;--swal2-actions-margin: 1.25em auto 0;--swal2-actions-padding: 0;--swal2-actions-border-radius: 0;--swal2-actions-background: transparent;--swal2-action-button-transition: background-color 0.2s, box-shadow 0.2s;--swal2-action-button-hover: black 10%;--swal2-action-button-active: black 10%;--swal2-confirm-button-box-shadow: none;--swal2-confirm-button-border-radius: 0.25em;--swal2-confirm-button-background-color: #7066e0;--swal2-confirm-button-color: #fff;--swal2-deny-button-box-shadow: none;--swal2-deny-button-border-radius: 0.25em;--swal2-deny-button-background-color: #dc3741;--swal2-deny-button-color: #fff;--swal2-cancel-button-box-shadow: none;--swal2-cancel-button-border-radius: 0.25em;--swal2-cancel-button-background-color: #6e7881;--swal2-cancel-button-color: #fff;--swal2-toast-show-animation: swal2-toast-show 0.5s;--swal2-toast-hide-animation: swal2-toast-hide 0.1s forwards;--swal2-toast-border: none;--swal2-toast-box-shadow: 0 0 1px hsl(0deg 0% 0% / 0.075), 0 1px 2px hsl(0deg 0% 0% / 0.075), 1px 2px 4px hsl(0deg 0% 0% / 0.075), 1px 3px 8px hsl(0deg 0% 0% / 0.075), 2px 4px 16px hsl(0deg 0% 0% / 0.075)}[data-swal2-theme=dark]{--swal2-dark-theme-black: #19191a;--swal2-dark-theme-white: #e1e1e1;--swal2-background: var(--swal2-dark-theme-black);--swal2-color: var(--swal2-dark-theme-white);--swal2-footer-border-color: #555;--swal2-input-background: color-mix(in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10%);--swal2-validation-message-background: color-mix( in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10% );--swal2-validation-message-color: var(--swal2-dark-theme-white);--swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.7)}@media(prefers-color-scheme: dark){[data-swal2-theme=auto]{--swal2-dark-theme-black: #19191a;--swal2-dark-theme-white: #e1e1e1;--swal2-background: var(--swal2-dark-theme-black);--swal2-color: var(--swal2-dark-theme-white);--swal2-footer-border-color: #555;--swal2-input-background: color-mix(in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10%);--swal2-validation-message-background: color-mix( in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10% );--swal2-validation-message-color: var(--swal2-dark-theme-white);--swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.7)}}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto !important}body.swal2-no-backdrop .swal2-container{background-color:rgba(0,0,0,0) !important;pointer-events:none}body.swal2-no-backdrop .swal2-container .swal2-popup{pointer-events:all}body.swal2-no-backdrop .swal2-container .swal2-modal{box-shadow:0 0 10px var(--swal2-backdrop)}body.swal2-toast-shown .swal2-container{box-sizing:border-box;width:360px;max-width:100%;background-color:rgba(0,0,0,0);pointer-events:none}body.swal2-toast-shown .swal2-container.swal2-top{inset:0 auto auto 50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{inset:0 0 auto auto}body.swal2-toast-shown .swal2-container.swal2-top-start,body.swal2-toast-shown .swal2-container.swal2-top-left{inset:0 auto auto 0}body.swal2-toast-shown .swal2-container.swal2-center-start,body.swal2-toast-shown .swal2-container.swal2-center-left{inset:50% auto auto 0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{inset:50% auto auto 50%;transform:translate(-50%, -50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{inset:50% 0 auto auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-start,body.swal2-toast-shown .swal2-container.swal2-bottom-left{inset:auto auto 0 0}body.swal2-toast-shown .swal2-container.swal2-bottom{inset:auto auto 0 50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{inset:auto 0 0 auto}@media print{body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown){overflow-y:scroll !important}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown) .swal2-container{position:static !important}}div:where(.swal2-container){display:grid;position:fixed;z-index:1060;inset:0;box-sizing:border-box;grid-template-areas:"top-start     top            top-end" "center-start  center         center-end" "bottom-start  bottom-center  bottom-end";grid-template-rows:minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);height:100%;padding:var(--swal2-container-padding);overflow-x:hidden;transition:var(--swal2-backdrop-transition);-webkit-overflow-scrolling:touch}div:where(.swal2-container).swal2-backdrop-show,div:where(.swal2-container).swal2-noanimation{background:var(--swal2-backdrop)}div:where(.swal2-container).swal2-backdrop-hide{background:rgba(0,0,0,0) !important}div:where(.swal2-container).swal2-top-start,div:where(.swal2-container).swal2-center-start,div:where(.swal2-container).swal2-bottom-start{grid-template-columns:minmax(0, 1fr) auto auto}div:where(.swal2-container).swal2-top,div:where(.swal2-container).swal2-center,div:where(.swal2-container).swal2-bottom{grid-template-columns:auto minmax(0, 1fr) auto}div:where(.swal2-container).swal2-top-end,div:where(.swal2-container).swal2-center-end,div:where(.swal2-container).swal2-bottom-end{grid-template-columns:auto auto minmax(0, 1fr)}div:where(.swal2-container).swal2-top-start>.swal2-popup{align-self:start}div:where(.swal2-container).swal2-top>.swal2-popup{grid-column:2;place-self:start center}div:where(.swal2-container).swal2-top-end>.swal2-popup,div:where(.swal2-container).swal2-top-right>.swal2-popup{grid-column:3;place-self:start end}div:where(.swal2-container).swal2-center-start>.swal2-popup,div:where(.swal2-container).swal2-center-left>.swal2-popup{grid-row:2;align-self:center}div:where(.swal2-container).swal2-center>.swal2-popup{grid-column:2;grid-row:2;place-self:center center}div:where(.swal2-container).swal2-center-end>.swal2-popup,div:where(.swal2-container).swal2-center-right>.swal2-popup{grid-column:3;grid-row:2;place-self:center end}div:where(.swal2-container).swal2-bottom-start>.swal2-popup,div:where(.swal2-container).swal2-bottom-left>.swal2-popup{grid-column:1;grid-row:3;align-self:end}div:where(.swal2-container).swal2-bottom>.swal2-popup{grid-column:2;grid-row:3;place-self:end center}div:where(.swal2-container).swal2-bottom-end>.swal2-popup,div:where(.swal2-container).swal2-bottom-right>.swal2-popup{grid-column:3;grid-row:3;place-self:end end}div:where(.swal2-container).swal2-grow-row>.swal2-popup,div:where(.swal2-container).swal2-grow-fullscreen>.swal2-popup{grid-column:1/4;width:100%}div:where(.swal2-container).swal2-grow-column>.swal2-popup,div:where(.swal2-container).swal2-grow-fullscreen>.swal2-popup{grid-row:1/4;align-self:stretch}div:where(.swal2-container).swal2-no-transition{transition:none !important}div:where(.swal2-container)[popover]{width:auto;border:0}div:where(.swal2-container) div:where(.swal2-popup){display:none;position:relative;box-sizing:border-box;grid-template-columns:minmax(0, 100%);width:var(--swal2-width);max-width:100%;padding:var(--swal2-padding);border:var(--swal2-border);border-radius:var(--swal2-border-radius);background:var(--swal2-background);color:var(--swal2-color);font-family:inherit;font-size:1rem;container-name:swal2-popup}div:where(.swal2-container) div:where(.swal2-popup):focus{outline:none}div:where(.swal2-container) div:where(.swal2-popup).swal2-loading{overflow-y:hidden}div:where(.swal2-container) div:where(.swal2-popup).swal2-draggable{cursor:grab}div:where(.swal2-container) div:where(.swal2-popup).swal2-draggable div:where(.swal2-icon){cursor:grab}div:where(.swal2-container) div:where(.swal2-popup).swal2-dragging{cursor:grabbing}div:where(.swal2-container) div:where(.swal2-popup).swal2-dragging div:where(.swal2-icon){cursor:grabbing}div:where(.swal2-container) h2:where(.swal2-title){position:relative;max-width:100%;margin:0;padding…</style>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
       body {
@@ -51,56 +54,70 @@
       .btn-primary:hover {
         background-color: #0056b3;
       }
-      .btn-admin {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        background-color: #6c757d;
-        border: none;
-        padding: 10px 20px;
-        color: white;
-        border-radius: 5px;
-        font-size: 14px;
-      }
-      .btn-admin:hover {
-        background-color: #5a6268;
-      }
     </style>
   </head>
   <body>
-
-
     <div class="container mt-5">
       <div class="text-center mb-4">
-        <img src="./mater-768x320.png" alt="Logo de la Escuela" style="width: 200px; height: auto">
+        <img
+          src="./mater-768x320.png"
+          alt="Logo de la Escuela"
+          style="width: 200px; height: auto"
+        />
       </div>
 
       <div class="card shadow-sm">
         <div class="card-body">
-          <h1 class="card-title text-center">
-            Circular de matrícula
-          </h1>
+          <h1 class="card-title text-center">Circular de matrícula</h1>
           <h1 class="card-title text-center">2026</h1>
-          <p class="text-center"><b>(tenga en cuenta que al elegir el curso será para el año próximo)</b></p>
+          <p class="text-center">
+            <b
+              >(tenga en cuenta que al elegir el curso será para el año
+              próximo)</b
+            >
+          </p>
+
+          <!-- FORMULARIO -->
           <form id="confirmarForm">
             <div class="form-group">
               <label for="dni">DNI del Alumno:</label>
-              <input type="number" id="dni" name="dni" class="form-control" placeholder="Ingresa el DNI del alumno" required="">
+              <input
+                type="number"
+                id="dni"
+                name="dni"
+                class="form-control"
+                placeholder="Ingresa el DNI del alumno"
+                required
+              />
             </div>
 
             <div class="form-group">
               <label for="nombre">Nombre del Alumno:</label>
-              <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingresa el nombre del alumno" required="">
+              <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                class="form-control"
+                placeholder="Ingresa el nombre del alumno"
+                required
+              />
             </div>
 
             <div class="form-group">
               <label for="apellido">Apellido del Alumno:</label>
-              <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ingresa el apellido del alumno" required="">
+              <input
+                type="text"
+                id="apellido"
+                name="apellido"
+                class="form-control"
+                placeholder="Ingresa el apellido del alumno"
+                required
+              />
             </div>
 
             <div class="form-group">
               <label for="nivel">Selecciona el nivel:</label>
-              <select id="nivel" name="nivel" class="form-control" required="">
+              <select id="nivel" name="nivel" class="form-control" required>
                 <option value="">Selecciona el nivel</option>
                 <option value="inicial">Nivel Inicial</option>
                 <option value="primario">Nivel Primario</option>
@@ -110,85 +127,23 @@
 
             <div class="form-group">
               <label for="curso">Curso/Grado/Año a inscribirse 2026:</label>
-              <select id="curso" name="curso" class="form-control" required="">
+              <select id="curso" name="curso" class="form-control" required>
                 <option value="">Selecciona primero el nivel</option>
               </select>
             </div>
 
-            <script>
-              const nivelSelect = document.getElementById("nivel");
-              const cursoSelect = document.getElementById("curso");
-
-              // Mapeo de nombres de cursos según el valor
-              const nombresCursos = {
-                1: "Sala de 3",
-                2: "Sala de 4",
-                3: "Sala de 5",
-                4: "Primer grado",
-                5: "Segundo grado",
-                6: "Tercer grado",
-                7: "Cuarto grado",
-                8: "Quinto grado",
-                9: "Sexto grado",
-                10: "Primer año",
-                11: "Segundo año",
-                12: "Tercer año",
-                13: "Cuarto año",
-                14: "Quinto año",
-                15: "Sexto año",
-              };
-
-              // Cuando se selecciona un nivel, actualizamos las opciones del curso
-              nivelSelect.addEventListener("change", function () {
-                const nivel = nivelSelect.value;
-                cursoSelect.innerHTML =
-                  '<option value="">Selecciona el curso</option>';
-
-                if (nivel === "inicial") {
-                  const opcionesInicial = [
-                    { value: 1, text: "Sala de 3" },
-                    { value: 2, text: "Sala de 4" },
-                    { value: 3, text: "Sala de 5" },
-                  ];
-                  opcionesInicial.forEach((opcion) => {
-                    const opt = document.createElement("option");
-                    opt.value = opcion.value;
-                    opt.textContent = opcion.text;
-                    cursoSelect.appendChild(opt);
-                  });
-                } else if (nivel === "primario") {
-                  const opcionesPrimario = [
-                    { value: 4, text: "Primer grado" },
-                    { value: 5, text: "Segundo grado" },
-                    { value: 6, text: "Tercer grado" },
-                    { value: 7, text: "Cuarto grado" },
-                    { value: 8, text: "Quinto grado" },
-                    { value: 9, text: "Sexto grado" },
-                  ];
-                  opcionesPrimario.forEach((opcion) => {
-                    const opt = document.createElement("option");
-                    opt.value = opcion.value;
-                    opt.textContent = opcion.text;
-                    cursoSelect.appendChild(opt);
-                  });
-                } else if (nivel === "secundario") {
-                  const opcionesSecundario = [
-                    { value: 10, text: "Primer año" },
-                    { value: 11, text: "Segundo año" },
-                    { value: 12, text: "Tercer año" },
-                    { value: 13, text: "Cuarto año" },
-                    { value: 14, text: "Quinto año" },
-                    { value: 15, text: "Sexto año" },
-                  ];
-                  opcionesSecundario.forEach((opcion) => {
-                    const opt = document.createElement("option");
-                    opt.value = opcion.value;
-                    opt.textContent = opcion.text;
-                    cursoSelect.appendChild(opt);
-                  });
-                }
-              });
-            </script>
+            <!-- ✅ NUEVO CAMPO EMAIL -->
+            <div class="form-group">
+              <label for="email">Correo electrónico del responsable:</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="ejemplo@correo.com"
+                required
+              />
+            </div>
 
             <button type="submit" class="btn btn-primary btn-block">
               Confirmar
@@ -201,26 +156,85 @@
     </div>
 
     <script>
-      // Evento para autocompletar el nombre y apellido cuando se introduce el DNI
+      // === Cursos según el nivel seleccionado ===
+      const nivelSelect = document.getElementById("nivel");
+      const cursoSelect = document.getElementById("curso");
+
+      const nombresCursos = {
+        1: "Sala de 3",
+        2: "Sala de 4",
+        3: "Sala de 5",
+        4: "Primer grado",
+        5: "Segundo grado",
+        6: "Tercer grado",
+        7: "Cuarto grado",
+        8: "Quinto grado",
+        9: "Sexto grado",
+        10: "Primer año",
+        11: "Segundo año",
+        12: "Tercer año",
+        13: "Cuarto año",
+        14: "Quinto año",
+        15: "Sexto año",
+      };
+
+      nivelSelect.addEventListener("change", function () {
+        const nivel = nivelSelect.value;
+        cursoSelect.innerHTML =
+          '<option value="">Selecciona el curso</option>';
+
+        let opciones = [];
+        if (nivel === "inicial") {
+          opciones = [
+            { value: 1, text: "Sala de 3" },
+            { value: 2, text: "Sala de 4" },
+            { value: 3, text: "Sala de 5" },
+          ];
+        } else if (nivel === "primario") {
+          opciones = [
+            { value: 4, text: "Primer grado" },
+            { value: 5, text: "Segundo grado" },
+            { value: 6, text: "Tercer grado" },
+            { value: 7, text: "Cuarto grado" },
+            { value: 8, text: "Quinto grado" },
+            { value: 9, text: "Sexto grado" },
+          ];
+        } else if (nivel === "secundario") {
+          opciones = [
+            { value: 10, text: "Primer año" },
+            { value: 11, text: "Segundo año" },
+            { value: 12, text: "Tercer año" },
+            { value: 13, text: "Cuarto año" },
+            { value: 14, text: "Quinto año" },
+            { value: 15, text: "Sexto año" },
+          ];
+        }
+
+        opciones.forEach((op) => {
+          const opt = document.createElement("option");
+          opt.value = op.value;
+          opt.textContent = op.text;
+          cursoSelect.appendChild(opt);
+        });
+      });
+
+      // === Buscar alumno por DNI ===
       document.getElementById("dni").addEventListener("change", async function () {
         const dni = this.value;
-
         try {
-          // Hacer una solicitud al backend para buscar al alumno por DNI
-          const response = await fetch(`https://circular-backend-k0ta.onrender.com/api/alumnos/dni/${dni}`); // Cambia la URL según tu configuración
+          const response = await fetch(
+            `https://circular-backend-k0ta.onrender.com/api/alumnos/dni/${dni}`
+          );
           if (response.ok) {
             const alumno = await response.json();
-            // Autocompletar los campos de nombre y apellido si el alumno existe
             document.getElementById("nombre").value = alumno.nombre;
             document.getElementById("apellido").value = alumno.apellido;
           } else {
-            // Mostrar alerta si no se encuentra el alumno
             Swal.fire({
               icon: "warning",
               title: "Alumno no encontrado",
-              text: "No se encontró ningún alumno con ese DNI."
+              text: "No se encontró ningún alumno con ese DNI.",
             });
-            // Limpiar los campos en caso de que no se encuentre
             document.getElementById("nombre").value = "";
             document.getElementById("apellido").value = "";
           }
@@ -229,30 +243,25 @@
           Swal.fire({
             icon: "error",
             title: "Error al buscar el alumno",
-            text: "Hubo un problema al intentar buscar el alumno. Por favor, intenta nuevamente."
+            text: "Hubo un problema al intentar buscar el alumno. Por favor, intenta nuevamente.",
           });
         }
       });
 
+      // === Confirmar inscripción ===
       document
         .getElementById("confirmarForm")
         .addEventListener("submit", async function (event) {
           event.preventDefault();
+
           const dni = document.getElementById("dni").value;
           const nombre = document.getElementById("nombre").value;
           const apellido = document.getElementById("apellido").value;
           const curso = document.getElementById("curso").value;
-          const nombreCurso = nombresCursos[curso]; // Obtener el nombre del curso
+          const email = document.getElementById("email").value;
+          const nombreCurso = nombresCursos[curso];
 
-          if (!/^(1[0-5]|[1-9])$/.test(curso)) {
-            Swal.fire({
-              icon: "error",
-              title: "Curso no válido",
-            });
-            return;
-          }
-
-          if (!dni || !nombre || !apellido || !curso) {
+          if (!dni || !nombre || !apellido || !curso || !email) {
             Swal.fire({
               icon: "warning",
               title: "Campos incompletos",
@@ -268,6 +277,7 @@
               <p><strong>Nombre:</strong> ${nombre}</p>
               <p><strong>Apellido:</strong> ${apellido}</p>
               <p><strong>Curso:</strong> ${nombreCurso}</p>
+              <p><strong>Email:</strong> ${email}</p>
             `,
             icon: "info",
             showCancelButton: true,
@@ -280,10 +290,8 @@
                   "https://circular-backend-k0ta.onrender.com/api/confirmar",
                   {
                     method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ dni, nombre, apellido, curso }),
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ dni, nombre, apellido, curso, email }),
                   }
                 );
 
@@ -300,15 +308,10 @@
                     icon: "success",
                     title: "Confirmación exitosa",
                     text: `Alumno en ${nombreCurso} ha sido confirmado.`,
-                    timer: 4000, // Duración de 4 segundos
-                    showConfirmButton: true, // Ocultar el botón de confirmación para que solo se cierre después del tiempo especificado
+                    timer: 4000,
+                    showConfirmButton: true,
                   }).then(() => {
-                    // Limpiar el formulario después de la confirmación exitosa
                     document.getElementById("confirmarForm").reset();
-                    // Opcionalmente, también limpiar manualmente los campos
-                    document.getElementById("nombre").value = "";
-                    document.getElementById("apellido").value = "";
-                    document.getElementById("dni").value = "";
                   });
                 }
               } catch (error) {
