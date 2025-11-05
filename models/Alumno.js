@@ -7,6 +7,8 @@ const AlumnoSchema = new mongoose.Schema({
   curso: Number,
   confirmado: { type: Boolean, default: false },
   fechaConfirmacion: Date,
+  fechaLimite: Date, // Fecha límite para enviar mail automático
+  email: { type: String, required: true, unique: true }
 });
 
 module.exports = mongoose.model('Alumno', AlumnoSchema);
