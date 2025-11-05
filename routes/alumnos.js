@@ -17,25 +17,40 @@ router.get('/alumnos/dni/:dni', async (req, res) => {
   }
 });
 
-// Ruta para confirmar inscripción
+// Ruta para confirmar inscripción (crea o actualiza alumno)
 router.post('/confirmar', async (req, res) => {
-  const { dni, nombre, apellido, curso } = req.body;
+  const { dni, nombre, apellido, curso, email } = req.body;
+
+  if (!dni || !nombre || !apellido || !curso || !email) {
+    return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+  }
 
   try {
     let alumno = await Alumno.findOne({ dni });
+
     if (alumno && alumno.confirmado) {
       return res.json({ confirmado: true, message: 'Ya confirmado' });
     }
 
     if (!alumno) {
-      alumno = new Alumno({ dni, nombre, apellido, curso });
+      alumno = new Alumno({ dni, nombre, apellido, curso, email });
+    } else {
+      // Actualizamos datos por si cambiaron
+      alumno.nombre = nombre;
+      alumno.apellido = apellido;
+      alumno.curso = curso;
+      alumno.email = email;
     }
 
+    // Primero enviamos el email
+    await enviarConfirmacionEmail(email, alumno);
+
+    // Guardamos la confirmación solo si el email se envió correctamente
     alumno.confirmado = true;
     alumno.fechaConfirmacion = new Date();
     await alumno.save();
 
-    res.json({ confirmado: false, message: 'Confirmación exitosa' });
+    res.json({ confirmado: false, message: 'Confirmación exitosa y correo enviado' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error al confirmar' });
@@ -59,59 +74,4 @@ router.get('/confirmaciones', async (req, res) => {
   }
 });
 
-// Ruta para confirmar inscripción
-router.post('/confirmar', async (req, res) => {
-  const { dni, nombre, apellido, curso, email } = req.body;
-
-  try {
-    let alumno = await Alumno.findOne({ dni });
-
-    if (alumno && alumno.confirmado) {
-      return res.json({ confirmado: true, message: 'Ya confirmado' });
-    }
-
-    if (!alumno) {
-      alumno = new Alumno({ dni, nombre, apellido, curso, email });
-    }
-
-    alumno.confirmado = true;
-    alumno.fechaConfirmacion = new Date();
-    await alumno.save();
-
-    // ✅ Enviar el correo de confirmación
-    if (email) {
-      await enviarConfirmacionEmail(email, alumno);
-    }
-
-    res.json({ confirmado: false, message: 'Confirmación exitosa y correo enviado' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error al confirmar' });
-  }
-});
-
-// Ruta de prueba para enviar correo
-router.get('/test-email', async (req, res) => {
-  const { enviarConfirmacionEmail } = require('../services/emailService');
-
-  const testAlumno = {
-    nombre: 'Test',
-    apellido: 'Brevo',
-    curso: 5,
-    dni: '99999999',
-    fechaConfirmacion: new Date()
-  };
-
-  try {
-    await enviarConfirmacionEmail('franco40012.fc@gmail.com', testAlumno);
-    res.json({ message: '✅ Email de prueba enviado correctamente' });
-  } catch (error) {
-    console.error('❌ Error en test-email:', error);
-    res.status(500).json({ message: 'Error al enviar el email de prueba' });
-  }
-});
-
-
 module.exports = router;
-
-
