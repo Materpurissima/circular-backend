@@ -3,13 +3,11 @@ const router = express.Router();
 const Alumno = require('../models/Alumno');
 const { enviarConfirmacionEmail } = require('../services/emailService');
 
-// Ruta para buscar alumno por DNI
+// Buscar alumno por DNI
 router.get('/alumnos/dni/:dni', async (req, res) => {
   try {
     const alumno = await Alumno.findOne({ dni: req.params.dni });
-    if (!alumno) {
-      return res.status(404).json({ message: 'Alumno no encontrado' });
-    }
+    if (!alumno) return res.status(404).json({ message: 'Alumno no encontrado' });
     res.json(alumno);
   } catch (err) {
     console.error(err);
@@ -17,7 +15,7 @@ router.get('/alumnos/dni/:dni', async (req, res) => {
   }
 });
 
-// Ruta para confirmar inscripción (crea o actualiza alumno)
+// Confirmar inscripción
 router.post('/confirmar', async (req, res) => {
   const { dni, nombre, apellido, curso, email } = req.body;
 
@@ -35,17 +33,19 @@ router.post('/confirmar', async (req, res) => {
     if (!alumno) {
       alumno = new Alumno({ dni, nombre, apellido, curso, email });
     } else {
-      // Actualizamos datos por si cambiaron
       alumno.nombre = nombre;
       alumno.apellido = apellido;
       alumno.curso = curso;
       alumno.email = email;
     }
 
-    // Primero enviamos el email
-    await enviarConfirmacionEmail(email, alumno);
+    // Intentamos enviar el correo
+    const emailEnviado = await enviarConfirmacionEmail(email, alumno);
 
-    // Guardamos la confirmación solo si el email se envió correctamente
+    if (!emailEnviado) {
+      return res.status(500).json({ confirmado: false, message: 'No se pudo enviar el correo de confirmación' });
+    }
+
     alumno.confirmado = true;
     alumno.fechaConfirmacion = new Date();
     await alumno.save();
@@ -57,7 +57,7 @@ router.post('/confirmar', async (req, res) => {
   }
 });
 
-// Ruta para listar confirmaciones (con filtros)
+// Listar confirmaciones con filtros
 router.get('/confirmaciones', async (req, res) => {
   try {
     const { curso, confirmado, dni } = req.query;
@@ -71,6 +71,47 @@ router.get('/confirmaciones', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error al consultar confirmaciones' });
+  }
+});
+
+// Nueva ruta para mostrar confirmaciones en HTML
+router.get('/confirmaciones/html', async (req, res) => {
+  try {
+    const alumnos = await Alumno.find({});
+    let html = `
+      <html>
+        <head><title>Confirmaciones</title></head>
+        <body>
+          <h1>Listado de confirmaciones</h1>
+          <table border="1" cellpadding="5" cellspacing="0">
+            <tr>
+              <th>DNI</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Curso</th>
+              <th>Email</th>
+              <th>Confirmado</th>
+              <th>Fecha Confirmación</th>
+            </tr>
+    `;
+    alumnos.forEach(a => {
+      html += `
+        <tr>
+          <td>${a.dni}</td>
+          <td>${a.nombre}</td>
+          <td>${a.apellido}</td>
+          <td>${a.curso}</td>
+          <td>${a.email}</td>
+          <td>${a.confirmado ? 'Sí' : 'No'}</td>
+          <td>${a.fechaConfirmacion ? new Date(a.fechaConfirmacion).toLocaleString() : ''}</td>
+        </tr>
+      `;
+    });
+    html += `</table></body></html>`;
+    res.send(html);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al generar HTML');
   }
 });
 

@@ -35,12 +35,12 @@ async function enviarConfirmacionEmail(destinatario, alumno) {
   };
 
   try {
-    await tranEmailApi.sendTransacEmail(emailData);
+    const data = await tranEmailApi.sendTransacEmail(emailData);
     console.log(`📧 Email enviado a ${destinatario}`);
-    return true; // Email enviado correctamente
+    return true;
   } catch (error) {
-    console.error('❌ Error enviando email:', error.message);
-    return false; // Email falló
+    console.error('❌ Error enviando email:', error.response ? error.response.body : error.message);
+    return false;
   }
 }
 

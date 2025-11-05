@@ -20,12 +20,14 @@ mongoose.connect(process.env.MONGO_URI)
 // Cron: todos los días 9:00 am revisa alumnos no confirmados y con fechaLimite pasada
 cron.schedule('0 9 * * *', async () => {
   console.log('🟡 Revisando alumnos pendientes...');
-
   const hoy = new Date();
   const alumnos = await Alumno.find({ confirmado: false, fechaLimite: { $lte: hoy } });
 
   for (const a of alumnos) {
     await enviarConfirmacionEmail(a.email, a);
+    // Marcamos como enviado para no repetir
+    a.fechaConfirmacion = new Date();
+    await a.save();
   }
 
   console.log(`🟢 Correos procesados: ${alumnos.length}`);
