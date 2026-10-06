@@ -34,7 +34,7 @@ cron.schedule('0 9 * * *', async () => {
 });
 
 // Rutas de API
-app.use('/api', require('./routes/alumno'));
+app.use('/api', require('./routes/alumnos'));
 
 // Ruta raíz
 app.get('/', (req, res) => {

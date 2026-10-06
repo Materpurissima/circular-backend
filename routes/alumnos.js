@@ -50,7 +50,7 @@ router.post('/confirmar', async (req, res) => {
     alumno.fechaConfirmacion = new Date();
     await alumno.save();
 
-    res.json({ confirmado: false, message: 'Confirmación exitosa y correo enviado' });
+    res.json({ success: true, message: 'Confirmación exitosa y correo enviado' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error al confirmar' });
