@@ -47,13 +47,10 @@ router.post('/confirmar', async (req, res) => {
     }
 
     alumno.confirmado = true;
-    
-    // CORRECCIÓN DE FECHA: Forzamos el horario local exacto de Argentina
     alumno.fechaConfirmacion = new Date().toLocaleString("es-AR", {
       timeZone: "America/Argentina/Buenos_Aires",
       hour12: false
     });
-    
     await alumno.save();
 
     res.json({ success: true, message: 'Confirmación exitosa y correo enviado' });
@@ -163,7 +160,6 @@ router.get('/confirmaciones/html', async (req, res) => {
         ? '<span class="badge badge-success">Sí</span>'
         : '<span class="badge badge-warning text-dark">No</span>';
       
-      // Como ya guardamos la fecha formateada como texto de Argentina, la mostramos directo
       const fechaFormateada = a.fechaConfirmacion || '-';
 
       html += `
@@ -228,4 +224,42 @@ router.get('/confirmaciones/html', async (req, res) => {
             async function eliminarAlumno(dni) {
               const confirmacion = await Swal.fire({
                 title: '¿Eliminar alumno?',
-                text:
+                text: "Esta acción borrará el registro de la base de datos de forma permanente.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+              });
+
+              if (confirmacion.isConfirmed) {
+                try {
+                  const response = await fetch('/api/alumnos/dni/' + dni, {
+                    method: 'DELETE'
+                  });
+                  const data = await response.json();
+
+                  if (data.success) {
+                    await Swal.fire('Eliminado', 'El alumno ha sido borrado correctamente.', 'success');
+                    location.reload();
+                  } else {
+                    Swal.fire('Error', 'No se pudo eliminar: ' + data.message, 'error');
+                  }
+                } catch (error) {
+                  Swal.fire('Error', 'Hubo un problema de conexión con el servidor.', 'error');
+                }
+              }
+            }
+          </script>
+        </body>
+      </html>
+    `;
+    res.send(html);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al generar el panel HTML');
+  }
+});
+
+module.exports = router;
