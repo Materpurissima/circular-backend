@@ -47,7 +47,13 @@ router.post('/confirmar', async (req, res) => {
     }
 
     alumno.confirmado = true;
-    alumno.fechaConfirmacion = new Date();
+    
+    // CORRECCIÓN DE FECHA: Forzamos el horario local exacto de Argentina
+    alumno.fechaConfirmacion = new Date().toLocaleString("es-AR", {
+      timeZone: "America/Argentina/Buenos_Aires",
+      hour12: false
+    });
+    
     await alumno.save();
 
     res.json({ success: true, message: 'Confirmación exitosa y correo enviado' });
@@ -69,8 +75,7 @@ router.delete('/alumnos/dni/:dni', async (req, res) => {
   }
 });
 
-// Listar confirmaciones con filtros
-// Nueva ruta para mostrar confirmaciones en HTML (Panel Interactivo)
+// Listar confirmaciones con filtros (Panel Interactivo Completo)
 router.get('/confirmaciones/html', async (req, res) => {
   try {
     const alumnos = await Alumno.find({});
@@ -157,7 +162,9 @@ router.get('/confirmaciones/html', async (req, res) => {
       const badgeConfirmado = a.confirmado
         ? '<span class="badge badge-success">Sí</span>'
         : '<span class="badge badge-warning text-dark">No</span>';
-      const fechaFormateada = a.fechaConfirmacion ? new Date(a.fechaConfirmacion).toLocaleString('es-AR') : '-';
+      
+      // Como ya guardamos la fecha formateada como texto de Argentina, la mostramos directo
+      const fechaFormateada = a.fechaConfirmacion || '-';
 
       html += `
         <tr class="alumno-row">
@@ -221,83 +228,4 @@ router.get('/confirmaciones/html', async (req, res) => {
             async function eliminarAlumno(dni) {
               const confirmacion = await Swal.fire({
                 title: '¿Eliminar alumno?',
-                text: "Esta acción borrará el registro de la base de datos de forma permanente.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-              });
-
-              if (confirmacion.isConfirmed) {
-                try {
-                  const response = await fetch('/api/alumnos/dni/' + dni, {
-                    method: 'DELETE'
-                  });
-                  const data = await response.json();
-
-                  if (data.success) {
-                    await Swal.fire('Eliminado', 'El alumno ha sido borrado correctamente.', 'success');
-                    location.reload(); // Recarga la tabla para actualizar los datos
-                  } else {
-                    Swal.fire('Error', 'No se pudo eliminar: ' + data.message, 'error');
-                  }
-                } catch (error) {
-                  Swal.fire('Error', 'Hubo un problema de conexión con el servidor.', 'error');
-                }
-              }
-            }
-          </script>
-        </body>
-      </html>
-    `;
-    res.send(html);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al generar el panel HTML');
-  }
-});
-
-// Nueva ruta para mostrar confirmaciones en HTML
-router.get('/confirmaciones/html', async (req, res) => {
-  try {
-    const alumnos = await Alumno.find({});
-    let html = `
-      <html>
-        <head><title>Confirmaciones</title></head>
-        <body>
-          <h1>Listado de confirmaciones</h1>
-          <table border="1" cellpadding="5" cellspacing="0">
-            <tr>
-              <th>DNI</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Curso</th>
-              <th>Email</th>
-              <th>Confirmado</th>
-              <th>Fecha Confirmación</th>
-            </tr>
-    `;
-    alumnos.forEach(a => {
-      html += `
-        <tr>
-          <td>${a.dni}</td>
-          <td>${a.nombre}</td>
-          <td>${a.apellido}</td>
-          <td>${a.curso}</td>
-          <td>${a.email}</td>
-          <td>${a.confirmado ? 'Sí' : 'No'}</td>
-          <td>${a.fechaConfirmacion ? new Date(a.fechaConfirmacion).toLocaleString() : ''}</td>
-        </tr>
-      `;
-    });
-    html += `</table></body></html>`;
-    res.send(html);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al generar HTML');
-  }
-});
-
-module.exports = router;
+                text:
