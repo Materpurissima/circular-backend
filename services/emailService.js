@@ -7,6 +7,15 @@ apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const tranEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
+// Diccionario para mapear el número de curso al nombre real
+const nombresCursos = {
+  1: "Sala de 3", 2: "Sala de 4", 3: "Sala de 5",
+  4: "Primer grado", 5: "Segundo grado", 6: "Tercer grado",
+  7: "Cuarto grado", 8: "Quinto grado", 9: "Sexto grado",
+  10: "Primer año", 11: "Segundo año", 12: "Tercer año",
+  13: "Cuarto año", 14: "Quinto año", 15: "Sexto año",
+};
+
 async function enviarConfirmacionEmail(destinatario, alumno) {
   const fecha = alumno.fechaConfirmacion
                 ? new Date(alumno.fechaConfirmacion).toLocaleString('es-AR')
@@ -24,7 +33,7 @@ async function enviarConfirmacionEmail(destinatario, alumno) {
           </div>
           <h2>Hola ${alumno.nombre} ${alumno.apellido}!</h2>
           <p>Tu confirmación de inscripción fue registrada exitosamente.</p>
-          <p><b>Curso:</b> ${alumno.curso}</p>
+          <p><b>Curso:</b> ${nombresCursos[alumno.curso] || alumno.curso}</p>
           <p><b>DNI:</b> ${alumno.dni}</p>
           <p>Fecha: ${fecha}</p>
           <br/>
