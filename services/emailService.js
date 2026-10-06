@@ -22,7 +22,7 @@ async function enviarConfirmacionEmail(destinatario, alumno) {
                 : new Date().toLocaleString('es-AR');
 
  const emailData = {
-    sender: { email: process.env.FROM_EMAIL, name: 'Colegio Mater Purissima' },
+    sender: { email: process.env.BREVO_SENDER, name: 'Colegio Mater Purissima' },
     to: [{ email: destinatario }],
     subject: 'Confirmación de inscripción',
     htmlContent: `
