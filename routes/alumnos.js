@@ -39,13 +39,7 @@ router.post('/confirmar', async (req, res) => {
       alumno.email = email;
     }
 
-    // Intentamos enviar el correo
-    const emailEnviado = await enviarConfirmacionEmail(email, alumno);
-
-    if (!emailEnviado) {
-      return res.status(500).json({ confirmado: false, message: 'No se pudo enviar el correo de confirmación' });
-    }
-
+    // 1. PRIMERO GUARDAMOS EN LA BASE DE DATOS (Con la fecha local de Argentina)
     alumno.confirmado = true;
     alumno.fechaConfirmacion = new Date().toLocaleString("es-AR", {
       timeZone: "America/Argentina/Buenos_Aires",
@@ -53,7 +47,14 @@ router.post('/confirmar', async (req, res) => {
     });
     await alumno.save();
 
-    res.json({ success: true, message: 'Confirmación exitosa y correo enviado' });
+    // 2. DESPUÉS INTENTAMOS ENVIAR EL CORREO
+    const emailEnviado = await enviarConfirmacionEmail(email, alumno);
+
+    if (!emailEnviado) {
+      console.warn("⚠️️ El alumno se guardó en la base de datos, pero el correo no pudo enviarse.");
+    }
+
+    res.json({ success: true, message: 'Confirmación exitosa y registrada' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error al confirmar' });
