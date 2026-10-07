@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Alumno = require('../models/Alumno');
-const Padron = require('../models/Padron'); // IMPORTAMOS EL PADRÓN
+const Padron = require('../models/Padron');
 const { enviarConfirmacionEmail } = require('../services/emailService');
 
 // Buscar alumno por DNI
@@ -31,28 +31,22 @@ router.post('/confirmar', async (req, res) => {
       return res.json({ confirmado: true, message: 'Ya confirmado' });
     }
 
-    // --- MAGIA DEL PADRÓN: Verificamos si existe en el padrón oficial ---
     const alumnoEnPadron = await Padron.findOne({ dni: String(dni) });
-    const esFueraDePadron = !alumnoEnPadron; // Si no lo encuentra, es true
+    const esFueraDePadron = !alumnoEnPadron;
 
     if (!alumno) {
       alumno = new Alumno({
-        dni,
-        nombre,
-        apellido,
-        curso,
-        email,
-        fueraDePadron: esFueraDePadron // Guardamos el estado
+        dni, nombre, apellido, curso, email,
+        fueraDePadron: esFueraDePadron
       });
     } else {
       alumno.nombre = nombre;
       alumno.apellido = apellido;
       alumno.curso = curso;
       alumno.email = email;
-      alumno.fueraDePadron = esFueraDePadron; // Actualizamos por si cargaron mal el DNI antes
+      alumno.fueraDePadron = esFueraDePadron;
     }
 
-    // 1. GUARDAMOS EN LA BASE DE DATOS
     alumno.confirmado = true;
     alumno.fechaConfirmacion = new Date().toLocaleString("es-AR", {
       timeZone: "America/Argentina/Buenos_Aires",
@@ -60,11 +54,10 @@ router.post('/confirmar', async (req, res) => {
     });
     await alumno.save();
 
-    // 2. ENVIAMOS EL CORREO
     const emailEnviado = await enviarConfirmacionEmail(email, alumno);
 
     if (!emailEnviado) {
-      console.warn("⚠ El alumno se guardó en la base de datos, pero el correo no pudo enviarse.");
+      console.warn("⚠ El correo no pudo enviarse.");
     }
 
     res.json({ success: true, message: 'Confirmación exitosa y registrada' });
@@ -86,18 +79,19 @@ router.delete('/alumnos/dni/:dni', async (req, res) => {
   }
 });
 
-// Listar confirmaciones con filtros (Panel Interactivo Completo)
+// Nombres de los cursos
+const nombresCursos = {
+  1: "Sala de 3", 2: "Sala de 4", 3: "Sala de 5",
+  4: "Primer grado", 5: "Segundo grado", 6: "Tercer grado",
+  7: "Cuarto grado", 8: "Quinto grado", 9: "Sexto grado",
+  10: "Primer año", 11: "Segundo año", 12: "Tercer año",
+  13: "Cuarto año", 14: "Quinto año", 15: "Sexto año",
+};
+
+// Panel Principal (Confirmados)
 router.get('/confirmaciones/html', async (req, res) => {
   try {
     const alumnos = await Alumno.find({});
-
-    const nombresCursos = {
-      1: "Sala de 3", 2: "Sala de 4", 3: "Sala de 5",
-      4: "Primer grado", 5: "Segundo grado", 6: "Tercer grado",
-      7: "Cuarto grado", 8: "Quinto grado", 9: "Sexto grado",
-      10: "Primer año", 11: "Segundo año", 12: "Tercer año",
-      13: "Cuarto año", 14: "Quinto año", 15: "Sexto año",
-    };
 
     let html = `
       <!DOCTYPE html>
@@ -108,18 +102,18 @@ router.get('/confirmaciones/html', async (req, res) => {
           <title>Panel de Confirmaciones</title>
           <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
           <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-          <style>
-            .fuera-padron { background-color: #ffeeba; }
-          </style>
+          <style>.fuera-padron { background-color: #ffeeba; }</style>
         </head>
         <body class="bg-light">
-          <div class="container-fluid mt-5 px-4">
-            <h1 class="mb-4 font-weight-bold">Listado de Confirmaciones 2027</h1>
+          <div class="container-fluid mt-4 px-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="font-weight-bold mb-0">Listado de Confirmados 2027</h1>
+                <a href="/api/faltantes/html" class="btn btn-danger btn-lg font-weight-bold shadow-sm">Ver Faltantes ➜</a>
+            </div>
 
-            <!-- Barra de Filtros -->
             <div class="row mb-4">
               <div class="col-md-3 mb-2">
-                <input type="text" id="searchInput" class="form-control" placeholder="Buscar por DNI o Nombre...">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
               </div>
               <div class="col-md-3 mb-2">
                 <select id="cursoFilter" class="form-control">
@@ -138,7 +132,6 @@ router.get('/confirmaciones/html', async (req, res) => {
                 </select>
               </div>
               <div class="col-md-3 mb-2">
-                <!-- Botón para ver los nuevos/fuera de padrón -->
                 <button id="btnFueraPadron" class="btn btn-warning w-100 font-weight-bold">⚠️ Ver Fuera de Padrón</button>
               </div>
               <div class="col-md-3 mb-2 text-right">
@@ -146,18 +139,11 @@ router.get('/confirmaciones/html', async (req, res) => {
               </div>
             </div>
 
-            <!-- Tabla de Datos -->
             <div class="table-responsive bg-white shadow-sm rounded">
               <table class="table table-hover mb-0" id="alumnosTable">
                 <thead class="thead-dark">
                   <tr>
-                    <th>DNI</th>
-                    <th>Nombre y Apellido</th>
-                    <th>Curso</th>
-                    <th>Email Responsable</th>
-                    <th>Estado</th>
-                    <th>Fecha Confirmación</th>
-                    <th>Acciones</th>
+                    <th>DNI</th><th>Nombre y Apellido</th><th>Curso</th><th>Email Responsable</th><th>Estado</th><th>Fecha Confirmación</th><th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -167,14 +153,9 @@ router.get('/confirmaciones/html', async (req, res) => {
       const nombreCurso = nombresCursos[a.curso] || a.curso;
       const nombreCompleto = a.apellido + ", " + a.nombre;
 
-      // Armamos la etiqueta de estado combinada
       let etiquetas = '';
-      if (a.confirmado) {
-        etiquetas += '<span class="badge badge-success mb-1 d-block">Confirmado</span>';
-      }
-      if (a.fueraDePadron) {
-        etiquetas += '<span class="badge badge-danger">⚠️ Fuera de Padrón</span>';
-      }
+      if (a.confirmado) etiquetas += '<span class="badge badge-success mb-1 d-block">Confirmado</span>';
+      if (a.fueraDePadron) etiquetas += '<span class="badge badge-danger">⚠️ Fuera de Padrón</span>';
 
       const rowClass = a.fueraDePadron ? 'alumno-row fuera-padron' : 'alumno-row';
       const isFueraPadronAttr = a.fueraDePadron ? 'true' : 'false';
@@ -187,9 +168,7 @@ router.get('/confirmaciones/html', async (req, res) => {
           <td>${a.email}</td>
           <td>${etiquetas}</td>
           <td style="font-size: 0.9rem;">${a.fechaConfirmacion || '-'}</td>
-          <td>
-            <button class="btn btn-outline-danger btn-sm" onclick="eliminarAlumno('${a.dni}')">🗑️</button>
-          </td>
+          <td><button class="btn btn-outline-danger btn-sm" onclick="eliminarAlumno('${a.dni}')">🗑️</button></td>
         </tr>
       `;
     });
@@ -199,14 +178,12 @@ router.get('/confirmaciones/html', async (req, res) => {
               </table>
             </div>
           </div>
-
           <script>
             const searchInput = document.getElementById('searchInput');
             const cursoFilter = document.getElementById('cursoFilter');
             const btnFueraPadron = document.getElementById('btnFueraPadron');
             const rows = document.querySelectorAll('.alumno-row');
             const totalCount = document.getElementById('totalCount');
-
             let filtroFueraPadronActivo = false;
 
             function filtrarTabla() {
@@ -230,7 +207,6 @@ router.get('/confirmaciones/html', async (req, res) => {
                   row.style.display = "none";
                 }
               });
-
               totalCount.textContent = visibles;
             }
 
@@ -250,14 +226,7 @@ router.get('/confirmaciones/html', async (req, res) => {
             cursoFilter.addEventListener('change', filtrarTabla);
 
             async function eliminarAlumno(dni) {
-              const confirmacion = await Swal.fire({
-                title: '¿Eliminar registro?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                confirmButtonText: 'Eliminar'
-              });
-
+              const confirmacion = await Swal.fire({ title: '¿Eliminar registro?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Eliminar' });
               if (confirmacion.isConfirmed) {
                 try {
                   const response = await fetch('/api/alumnos/dni/' + dni, { method: 'DELETE' });
@@ -275,5 +244,107 @@ router.get('/confirmaciones/html', async (req, res) => {
     res.status(500).send('Error');
   }
 });
+
+
+// --- NUEVO PANEL: FALTANTES ---
+router.get('/faltantes/html', async (req, res) => {
+    try {
+      // 1. Traemos todo el padrón oficial (los 474)
+      const padronCompleto = await Padron.find({});
+
+      // 2. Traemos a todos los que YA confirmaron
+      const confirmados = await Alumno.find({ confirmado: true });
+
+      // Creamos un array rápido solo con los DNIs de los confirmados para comparar
+      const dnisConfirmados = confirmados.map(a => a.dni);
+
+      // 3. LA MAGIA: Filtramos el padrón dejando SOLO a los que NO están en la lista de confirmados
+      const faltantes = padronCompleto.filter(p => !dnisConfirmados.includes(p.dni));
+
+      let html = `
+        <!DOCTYPE html>
+        <html lang="es">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Panel de Faltantes</title>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+            <style>
+              .table-faltantes th { background-color: #dc3545; color: white; }
+            </style>
+          </head>
+          <body class="bg-light">
+            <div class="container-fluid mt-4 px-4">
+
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                  <h1 class="font-weight-bold text-danger mb-0">Listado de Faltantes (${faltantes.length})</h1>
+                  <a href="/api/confirmaciones/html" class="btn btn-secondary btn-lg font-weight-bold shadow-sm">⬅ Volver a Confirmados</a>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-4">
+                  <input type="text" id="searchInput" class="form-control" placeholder="Buscar por DNI o Nombre...">
+                </div>
+              </div>
+
+              <div class="table-responsive bg-white shadow-sm rounded border-danger">
+                <table class="table table-hover table-bordered mb-0" id="faltantesTable">
+                  <thead class="table-faltantes">
+                    <tr>
+                      <th>DNI</th>
+                      <th>Nombre y Apellido</th>
+                      <th>Nivel</th>
+                      <th>Curso</th>
+                      <th>Email Padre</th>
+                      <th>Email Madre</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+      `;
+
+      faltantes.forEach(f => {
+        html += `
+          <tr class="faltante-row">
+            <td class="font-weight-bold">${f.dni}</td>
+            <td class="nombre-cell">${f.nombre}</td>
+            <td>${f.nivel}</td>
+            <td>${f.curso}</td>
+            <td><a href="mailto:${f.emailPadre}">${f.emailPadre}</a></td>
+            <td><a href="mailto:${f.emailMadre}">${f.emailMadre}</a></td>
+          </tr>
+        `;
+      });
+
+      html += `
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <script>
+              const searchInput = document.getElementById('searchInput');
+              const rows = document.querySelectorAll('.faltante-row');
+
+              searchInput.addEventListener('keyup', () => {
+                const searchTerm = searchInput.value.toLowerCase();
+                rows.forEach(row => {
+                  const textContent = row.textContent.toLowerCase();
+                  if (textContent.includes(searchTerm)) {
+                    row.style.display = "";
+                  } else {
+                    row.style.display = "none";
+                  }
+                });
+              });
+            </script>
+          </body>
+        </html>
+      `;
+      res.send(html);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error al cargar panel de faltantes');
+    }
+  });
 
 module.exports = router;
