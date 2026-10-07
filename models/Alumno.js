@@ -11,4 +11,18 @@ const AlumnoSchema = new mongoose.Schema({
   email: { type: String, required: true }  // Quitamos unique: true en email por si dos hermanos usan el mismo correo de los padres
 });
 
+const mongoose = require('mongoose');
+
+const alumnoSchema = new mongoose.Schema({
+  nombre: String,
+  curso: String,
+  dni: String,
+  email: String,
+  // ... (tus otros campos)
+  fechaConfirmacion: Date,
+  fueraDePadron: { type: Boolean, default: false } // Agregamos esta línea
+});
+
+module.exports = mongoose.model('Alumno', alumnoSchema);
+
 module.exports = mongoose.model('Alumno', AlumnoSchema);

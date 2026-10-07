@@ -1,2 +1,5 @@
 node_modules/
 .env
+Alumnos_todos.XLS
+*.xls
+*.xlsx
