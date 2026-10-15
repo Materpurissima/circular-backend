@@ -93,6 +93,14 @@ router.get('/confirmaciones/html', async (req, res) => {
   try {
     const alumnos = await Alumno.find({});
 
+    const nombresCursos = {
+      1: "Sala de 3", 2: "Sala de 4", 3: "Sala de 5",
+      4: "Primer grado", 5: "Segundo grado", 6: "Tercer grado",
+      7: "Cuarto grado", 8: "Quinto grado", 9: "Sexto grado",
+      10: "Primer año", 11: "Segundo año", 12: "Tercer año",
+      13: "Cuarto año", 14: "Quinto año", 15: "Sexto año",
+    };
+
     let html = `
       <!DOCTYPE html>
       <html lang="es">
@@ -100,168 +108,55 @@ router.get('/confirmaciones/html', async (req, res) => {
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Panel de Confirmaciones</title>
-          <!-- Importamos una tipografía más moderna y redondeada (Nunito) -->
           <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
           <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
           <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
           
           <style>
-            body {
-              font-family: 'Nunito', sans-serif;
-              background-color: #f8fafc;
-              color: #1e293b;
-            }
-            .title-panel {
-              font-weight: 800;
-              color: #0f172a;
-            }
-            /* Inputs y selects redondeados modernos con sombra leve */
-            .form-control {
-              border-radius: 50px;
-              border: 1.5px solid #e2e8f0;
-              padding: 0.6rem 1.2rem;
-              height: auto;
-              font-size: 0.95rem;
-              transition: all 0.3s ease;
-              box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-            }
-            .form-control:focus {
-              border-color: #3b82f6;
-              box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-            }
-            /* BOTONERA CON EFECTOS Y REDONDEADA (Píldora) */
-            .btn-custom {
-              border-radius: 50px;
-              font-weight: 700;
-              padding: 0.65rem 1.8rem;
-              border: none;
-              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-            }
-            .btn-custom:hover {
-              transform: translateY(-2px);
-              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            }
-            .btn-custom:active {
-              transform: translateY(0);
-            }
-            /* Botón "Ver Faltantes" - Rojo vibrante con efecto hover */
-            .btn-red {
-              background-color: #e11d48;
-              color: white !important;
-            }
-            .btn-red:hover {
-              background-color: #be123c;
-            }
-            /* Botón "Ver Fuera de Padrón" sin emoji - Amarillo moderno */
-            .btn-yellow {
-              background-color: #eab308;
-              color: #1e293b !important;
-            }
-            .btn-yellow:hover {
-              background-color: #ca8a04;
-            }
-            .btn-danger-filtro {
-              background-color: #ef4444;
-              color: white !important;
-            }
-            /* Total Filtrado (Ubicado arriba de acciones en la esquina de filtros) */
-            .badge-total {
-              border-radius: 50px;
-              background-color: #3b82f6;
-              color: white;
-              padding: 0.65rem 1.5rem;
-              font-weight: 800;
-              font-size: 0.95rem;
-              box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
-              display: inline-block;
-            }
-            /* Estilos de la Tabla Redondeada */
-            .table-container {
-              background: white;
-              border-radius: 16px;
-              overflow: hidden;
-              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.025);
-              border: 1px solid #e2e8f0;
-            }
-            .table {
-              margin-bottom: 0;
-            }
-            .table thead th {
-              background-color: #1e293b;
-              color: #f8fafc;
-              font-weight: 700;
-              text-transform: uppercase;
-              font-size: 0.8rem;
-              letter-spacing: 0.05em;
-              border: none;
-              padding: 1.1rem 1rem;
-            }
-            .table tbody td {
-              padding: 1rem 1rem;
-              vertical-align: middle;
-              border-color: #f1f5f9;
-              font-size: 0.95rem;
-            }
-            .fuera-padron {
-              background-color: #fef08a; /* Soft Yellow */
-            }
-            /* Badges */
-            .badge-success-modern {
-              background-color: #dcfce7;
-              color: #15803d;
-              font-weight: 700;
-              padding: 0.35rem 0.8rem;
-              border-radius: 50px;
-              display: inline-block;
-            }
-            .badge-danger-modern {
-              background-color: #fee2e2;
-              color: #b91c1c;
-              font-weight: 700;
-              padding: 0.35rem 0.8rem;
-              border-radius: 50px;
-              display: inline-block;
-            }
-            /* Botón borrar */
-            .btn-delete {
-              border-radius: 50%;
-              width: 36px;
-              height: 36px;
-              padding: 0;
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              border: 1.5px solid #f1f5f9;
-              background-color: white;
-              color: #94a3b8;
-              transition: all 0.2s ease;
-            }
-            .btn-delete:hover {
-              background-color: #fee2e2;
-              border-color: #fecaca;
-              color: #ef4444;
-              transform: scale(1.05);
-            }
+            body { font-family: 'Nunito', sans-serif; background-color: #f8fafc; color: #1e293b; }
+            .title-panel { font-weight: 800; color: #0f172a; }
+            .form-control { border-radius: 50px; border: 1.5px solid #e2e8f0; padding: 0.6rem 1.2rem; transition: all 0.3s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+            .form-control:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+            
+            /* Botones principales agrupados */
+            .btn-custom { border-radius: 50px; font-weight: 700; padding: 0.65rem 1.8rem; border: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); }
+            .btn-custom:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+            .btn-red { background-color: #e11d48; color: white !important; }
+            .btn-red:hover { background-color: #be123c; }
+            .btn-yellow { background-color: #eab308; color: #1e293b !important; }
+            .btn-yellow:hover { background-color: #ca8a04; }
+            .btn-danger-filtro { background-color: #ef4444; color: white !important; }
+            
+            .badge-total { border-radius: 50px; background-color: #3b82f6; color: white; padding: 0.65rem 1.5rem; font-weight: 800; font-size: 0.95rem; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1); display: inline-block; }
+            .table-container { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+            .table thead th { background-color: #1e293b; color: #f8fafc; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 1.1rem 1rem; border: none; }
+            .table tbody td { padding: 1rem 1rem; vertical-align: middle; border-color: #f1f5f9; font-size: 0.95rem; }
+            .fuera-padron { background-color: #fef08a; }
+            .badge-success-modern { background-color: #dcfce7; color: #15803d; font-weight: 700; padding: 0.35rem 0.8rem; border-radius: 50px; display: inline-block; }
+            .badge-danger-modern { background-color: #fee2e2; color: #b91c1c; font-weight: 700; padding: 0.35rem 0.8rem; border-radius: 50px; display: inline-block; }
+            .btn-delete { border-radius: 50%; width: 36px; height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #f1f5f9; background-color: white; color: #94a3b8; transition: all 0.2s ease; }
+            .btn-delete:hover { background-color: #fee2e2; border-color: #fecaca; color: #ef4444; transform: scale(1.05); }
           </style>
         </head>
         <body>
           <div class="container-fluid mt-4 px-lg-5">
+            <!-- Título y Botones agrupados arriba a la derecha -->
             <div class="row align-items-center mb-4">
-                <div class="col-md-6 mb-3 mb-md-0">
+                <div class="col-md-5 mb-3 mb-md-0">
                     <h1 class="title-panel mb-0">Listado de Confirmados 2027</h1>
                 </div>
-                <div class="col-md-6 text-md-right">
-                    <a href="/api/faltantes/html" class="btn btn-custom btn-red btn-lg shadow-sm">Ver Faltantes ➜</a>
+                <div class="col-md-7 text-md-right">
+                    <button id="btnFueraPadron" class="btn btn-custom btn-yellow mr-2" style="min-width: 190px;">Ver Fuera de Padrón</button>
+                    <a href="/api/faltantes/html" class="btn btn-custom btn-red" style="min-width: 190px;">Ver Faltantes</a>
                 </div>
             </div>
 
-            <!-- Filtros y Botonera -->
+            <!-- Barra de Filtros -->
             <div class="row align-items-center mb-4">
-              <div class="col-md-3 mb-3 mb-md-0">
+              <div class="col-md-4 mb-3 mb-md-0">
                 <input type="text" id="searchInput" class="form-control" placeholder="🔍 Buscar por DNI o Nombre...">
               </div>
-              <div class="col-md-3 mb-3 mb-md-0">
+              <div class="col-md-4 mb-3 mb-md-0">
                 <select id="cursoFilter" class="form-control">
                   <option value="">Todos los cursos</option>
                   <optgroup label="Nivel Inicial">
@@ -277,11 +172,7 @@ router.get('/confirmaciones/html', async (req, res) => {
                   </optgroup>
                 </select>
               </div>
-              <div class="col-md-3 mb-3 mb-md-0">
-                <button id="btnFueraPadron" class="btn btn-custom btn-yellow w-100">Ver Fuera de Padrón</button>
-              </div>
-              <!-- TOTAL FILTRADOS REDISEÑADO: Justo encima de la tabla en el extremo de la botonera -->
-              <div class="col-md-3 text-md-right">
+              <div class="col-md-4 text-md-right">
                 <span class="badge-total">Total Filtrados: <span id="totalCount">${alumnos.length}</span></span>
               </div>
             </div>
@@ -294,7 +185,7 @@ router.get('/confirmaciones/html', async (req, res) => {
                     <th>Nombre y Apellido</th>
                     <th>Curso</th>
                     <th>Email Responsable</th>
-                    <th>Estado</th>
+                    <th class="text-center">Estado</th>
                     <th>Fecha Confirmación</th>
                     <th class="text-center" style="width: 80px;">Acciones</th>
                   </tr>
@@ -381,14 +272,7 @@ router.get('/confirmaciones/html', async (req, res) => {
             cursoFilter.addEventListener('change', filtrarTabla);
 
             async function eliminarAlumno(dni) {
-              const confirmacion = await Swal.fire({ 
-                title: '¿Eliminar registro?', 
-                icon: 'warning', 
-                showCancelButton: true, 
-                confirmButtonColor: '#ef4444', 
-                confirmButtonText: 'Eliminar',
-                cancelButtonText: 'Cancelar'
-              });
+              const confirmacion = await Swal.fire({ title: '¿Eliminar registro?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Eliminar', cancelButtonText: 'Cancelar' });
               if (confirmacion.isConfirmed) {
                 try {
                   const response = await fetch('/api/alumnos/dni/' + dni, { method: 'DELETE' });
@@ -408,21 +292,14 @@ router.get('/confirmaciones/html', async (req, res) => {
 });
 
 
-// --- NUEVO PANEL: FALTANTES ---
+// --- NUEVO PANEL: FALTANTES CON ESTILO MODERNO ---
 router.get('/faltantes/html', async (req, res) => {
     try {
-      // 1. Traemos todo el padrón oficial (los 474)
       const padronCompleto = await Padron.find({});
-
-      // 2. Traemos a todos los que YA confirmaron
       const confirmados = await Alumno.find({ confirmado: true });
-
-      // Creamos un array rápido solo con los DNIs de los confirmados para comparar
       const dnisConfirmados = confirmados.map(a => a.dni);
-
-      // 3. LA MAGIA: Filtramos el padrón dejando SOLO a los que NO están en la lista de confirmados
       const faltantes = padronCompleto.filter(p => !dnisConfirmados.includes(p.dni));
-
+  
       let html = `
         <!DOCTYPE html>
         <html lang="es">
@@ -430,28 +307,50 @@ router.get('/faltantes/html', async (req, res) => {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Panel de Faltantes</title>
+            <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+            
             <style>
-              .table-faltantes th { background-color: #dc3545; color: white; }
+              body { font-family: 'Nunito', sans-serif; background-color: #f8fafc; color: #1e293b; }
+              .title-panel { font-weight: 800; color: #e11d48; }
+              .form-control { border-radius: 50px; border: 1.5px solid #e2e8f0; padding: 0.6rem 1.2rem; transition: all 0.3s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+              .form-control:focus { border-color: #e11d48; box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15); }
+              
+              .btn-custom { border-radius: 50px; font-weight: 700; padding: 0.65rem 1.8rem; border: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); }
+              .btn-custom:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+              .btn-secondary-custom { background-color: #64748b; color: white !important; }
+              .btn-secondary-custom:hover { background-color: #475569; }
+              
+              .badge-total { border-radius: 50px; background-color: #e11d48; color: white; padding: 0.65rem 1.5rem; font-weight: 800; font-size: 0.95rem; box-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.15); display: inline-block; }
+              .table-container { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+              .table thead th { background-color: #1e293b; color: #f8fafc; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 1.1rem 1rem; border: none; }
+              .table tbody td { padding: 1rem 1rem; vertical-align: middle; border-color: #f1f5f9; font-size: 0.95rem; }
             </style>
           </head>
-          <body class="bg-light">
-            <div class="container-fluid mt-4 px-4">
-
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                  <h1 class="font-weight-bold text-danger mb-0">Listado de Faltantes (${faltantes.length})</h1>
-                  <a href="/api/confirmaciones/html" class="btn btn-secondary btn-lg font-weight-bold shadow-sm">⬅ Volver a Confirmados</a>
+          <body>
+            <div class="container-fluid mt-4 px-lg-5">
+              
+              <div class="row align-items-center mb-4">
+                  <div class="col-md-6 mb-3 mb-md-0">
+                      <h1 class="title-panel mb-0">Listado de Faltantes</h1>
+                  </div>
+                  <div class="col-md-6 text-md-right">
+                      <a href="/api/confirmaciones/html" class="btn btn-custom btn-secondary-custom" style="min-width: 190px;">Volver a Confirmados</a>
+                  </div>
               </div>
-
-              <div class="row mb-4">
-                <div class="col-md-4">
-                  <input type="text" id="searchInput" class="form-control" placeholder="Buscar por DNI o Nombre...">
+  
+              <div class="row align-items-center mb-4">
+                <div class="col-md-4 mb-3 mb-md-0">
+                  <input type="text" id="searchInput" class="form-control" placeholder="🔍 Buscar por DNI o Nombre...">
+                </div>
+                <div class="col-md-8 text-md-right">
+                   <span class="badge-total">Total Faltantes: <span id="totalCount">${faltantes.length}</span></span>
                 </div>
               </div>
-
-              <div class="table-responsive bg-white shadow-sm rounded border-danger">
-                <table class="table table-hover table-bordered mb-0" id="faltantesTable">
-                  <thead class="table-faltantes">
+  
+              <div class="table-responsive table-container">
+                <table class="table table-hover mb-0" id="faltantesTable">
+                  <thead>
                     <tr>
                       <th>DNI</th>
                       <th>Nombre y Apellido</th>
@@ -463,40 +362,44 @@ router.get('/faltantes/html', async (req, res) => {
                   </thead>
                   <tbody>
       `;
-
+  
       faltantes.forEach(f => {
         html += `
           <tr class="faltante-row">
-            <td class="font-weight-bold">${f.dni}</td>
-            <td class="nombre-cell">${f.nombre}</td>
-            <td>${f.nivel}</td>
-            <td>${f.curso}</td>
-            <td><a href="mailto:${f.emailPadre}">${f.emailPadre}</a></td>
-            <td><a href="mailto:${f.emailMadre}">${f.emailMadre}</a></td>
+            <td class="font-weight-bold" style="color: #475569;">${f.dni}</td>
+            <td class="nombre-cell font-weight-600">${f.nombre}</td>
+            <td style="color: #64748b;">${f.nivel}</td>
+            <td style="color: #64748b;">${f.curso}</td>
+            <td><a href="mailto:${f.emailPadre}" style="color: #3b82f6;">${f.emailPadre}</a></td>
+            <td><a href="mailto:${f.emailMadre}" style="color: #3b82f6;">${f.emailMadre}</a></td>
           </tr>
         `;
       });
-
+  
       html += `
                   </tbody>
                 </table>
               </div>
             </div>
-
+  
             <script>
               const searchInput = document.getElementById('searchInput');
               const rows = document.querySelectorAll('.faltante-row');
-
+              const totalCount = document.getElementById('totalCount');
+  
               searchInput.addEventListener('keyup', () => {
                 const searchTerm = searchInput.value.toLowerCase();
+                let visibles = 0;
                 rows.forEach(row => {
                   const textContent = row.textContent.toLowerCase();
                   if (textContent.includes(searchTerm)) {
                     row.style.display = "";
+                    visibles++;
                   } else {
                     row.style.display = "none";
                   }
                 });
+                totalCount.textContent = visibles;
               });
             </script>
           </body>
@@ -507,6 +410,6 @@ router.get('/faltantes/html', async (req, res) => {
       console.error(err);
       res.status(500).send('Error al cargar panel de faltantes');
     }
-  });
+});
 
 module.exports = router;
