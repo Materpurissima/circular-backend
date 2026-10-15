@@ -17,12 +17,13 @@ const nombresCursos = {
 };
 
 async function enviarConfirmacionEmail(destinatario, alumno) {
+  // Como alumno.fechaConfirmacion ya es un texto formateado, lo usamos directamente
   const fecha = alumno.fechaConfirmacion
-                ? new Date(alumno.fechaConfirmacion).toLocaleString('es-AR')
-                : new Date().toLocaleString('es-AR');
+                ? alumno.fechaConfirmacion
+                : new Date().toLocaleString('es-AR', { timeZone: "America/Argentina/Buenos_Aires" });
 
  const emailData = {
-    sender: { email: process.env.BREVO_SENDER, name: 'Colegio Mater Purissima' },
+    sender: { email: process.env.FROM_EMAIL, name: 'Colegio Mater Purissima' },
     to: [{ email: destinatario }],
     subject: 'Confirmación de inscripción',
     htmlContent: `
