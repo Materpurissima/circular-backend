@@ -309,6 +309,7 @@ router.get('/faltantes/html', async (req, res) => {
             <title>Panel de Faltantes</title>
             <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             
             <style>
               body { font-family: 'Nunito', sans-serif; background-color: #f8fafc; color: #1e293b; }
@@ -320,6 +321,8 @@ router.get('/faltantes/html', async (req, res) => {
               .btn-custom:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
               .btn-secondary-custom { background-color: #64748b; color: white !important; }
               .btn-secondary-custom:hover { background-color: #475569; }
+              .btn-copy { background-color: #10b981; color: white !important; }
+              .btn-copy:hover { background-color: #059669; }
               
               .badge-total { border-radius: 50px; background-color: #e11d48; color: white; padding: 0.65rem 1.5rem; font-weight: 800; font-size: 0.95rem; box-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.15); display: inline-block; }
               .table-container { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
@@ -331,10 +334,12 @@ router.get('/faltantes/html', async (req, res) => {
             <div class="container-fluid mt-4 px-lg-5">
               
               <div class="row align-items-center mb-4">
-                  <div class="col-md-6 mb-3 mb-md-0">
+                  <div class="col-md-5 mb-3 mb-md-0">
                       <h1 class="title-panel mb-0">Listado de Faltantes</h1>
                   </div>
-                  <div class="col-md-6 text-md-right">
+                  <div class="col-md-7 text-md-right">
+                      <!-- EL NUEVO BOTÓN PARA COPIAR MAILS -->
+                      <button id="btnCopiarMails" class="btn btn-custom btn-copy mr-2" style="min-width: 190px;">📋 Copiar Mails (Sin 6to)</button>
                       <a href="/api/confirmaciones/html" class="btn btn-custom btn-secondary-custom" style="min-width: 190px;">Volver a Confirmados</a>
                   </div>
               </div>
@@ -369,9 +374,9 @@ router.get('/faltantes/html', async (req, res) => {
             <td class="font-weight-bold" style="color: #475569;">${f.dni}</td>
             <td class="nombre-cell font-weight-600">${f.nombre}</td>
             <td style="color: #64748b;">${f.nivel}</td>
-            <td style="color: #64748b;">${f.curso}</td>
-            <td><a href="mailto:${f.emailPadre}" style="color: #3b82f6;">${f.emailPadre}</a></td>
-            <td><a href="mailto:${f.emailMadre}" style="color: #3b82f6;">${f.emailMadre}</a></td>
+            <td class="curso-cell" style="color: #64748b;">${f.curso}</td>
+            <td><a href="mailto:${f.emailPadre}" class="email-padre" style="color: #3b82f6;">${f.emailPadre || ''}</a></td>
+            <td><a href="mailto:${f.emailMadre}" class="email-madre" style="color: #3b82f6;">${f.emailMadre || ''}</a></td>
           </tr>
         `;
       });
@@ -400,6 +405,41 @@ router.get('/faltantes/html', async (req, res) => {
                   }
                 });
                 totalCount.textContent = visibles;
+              });
+
+              // Lógica para copiar los correos
+              document.getElementById('btnCopiarMails').addEventListener('click', () => {
+                let correos = new Set(); // Usamos Set para que no haya correos repetidos
+
+                rows.forEach(row => {
+                  const curso = row.querySelector('.curso-cell').textContent.toLowerCase();
+                  
+                  // Si el curso NO incluye la palabra "sexto" ni "6to"
+                  if (!curso.includes('sexto') && !curso.includes('6to') && !curso.includes('6°')) {
+                    const emailPadre = row.querySelector('.email-padre').textContent.trim();
+                    const emailMadre = row.querySelector('.email-madre').textContent.trim();
+                    
+                    // Si el correo existe y tiene un arroba, lo sumamos
+                    if (emailPadre && emailPadre.includes('@')) correos.add(emailPadre);
+                    if (emailMadre && emailMadre.includes('@')) correos.add(emailMadre);
+                  }
+                });
+
+                // Unimos todos los correos con una coma y un espacio
+                const correosString = Array.from(correos).join(', ');
+
+                // Lo copiamos al portapapeles
+                navigator.clipboard.writeText(correosString).then(() => {
+                  Swal.fire({
+                    title: '¡Correos Copiados!',
+                    text: 'Se copiaron ' + correos.size + ' correos únicos. Ya podés pegarlos en el campo CCO de tu Gmail.',
+                    icon: 'success',
+                    confirmButtonColor: '#10b981'
+                  });
+                }).catch(err => {
+                  console.error('Error al copiar: ', err);
+                  Swal.fire('Error', 'No se pudieron copiar los correos a tu portapapeles.', 'error');
+                });
               });
             </script>
           </body>
